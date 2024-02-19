@@ -182,3 +182,6 @@ bun.lockb
 # env
 .env.local
 .env
+
+# cache
+cache

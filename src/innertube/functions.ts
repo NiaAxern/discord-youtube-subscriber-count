@@ -6,7 +6,7 @@ import { formatLargeNumber } from '../utilities';
 
 async function getChannel_About(channel_id: string): Promise<Channel> {
 	// TODO: maybe typing these?
-	const data: any = await fetch(
+	const data: any = await fetch( // eslint-disable-line
 		'https://www.youtube.com/youtubei/v1/browse?key=AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8&prettyPrint=false',
 		{
 			headers: {
@@ -134,7 +134,7 @@ async function getChannel_About(channel_id: string): Promise<Channel> {
 }
 async function getChannel_Main(channel_id: string): Promise<Channel> {
 	// TODO: same here, maybe typing these someday?
-	const data: any = await fetch(
+	const data: any = await fetch( // eslint-disable-line
 		'https://www.youtube.com/youtubei/v1/browse?key=AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8&prettyPrint=false',
 		{
 			headers: {

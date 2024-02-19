@@ -1,8 +1,6 @@
 /** @format */
 
-import {
-	SlashCommandBuilder
-} from 'discord.js';
+import { SlashCommandBuilder } from 'discord.js';
 
 import type { Commands } from '../types/commands';
 
@@ -10,7 +8,7 @@ const commands: Commands = {
 	ping: {
 		data: new SlashCommandBuilder()
 			.setName('ping')
-			.setDescription('Replies with Pong!'),
+			.setDescription('Check the ping of the bot!'),
 		execute: async (interaction) => {
 			await interaction.reply(`Ping: ${interaction.client.ws.ping}ms`);
 		},
