@@ -3,9 +3,16 @@
   "module": "index.ts",
   "type": "module",
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/eslint__js": "^8.42.3"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "discord.js": "^14.14.1",
+    "eslint": "^8.56.0",
+    "typescript": "^5.0.0",
+    "typescript-eslint": "^7.0.1"
   }
 }

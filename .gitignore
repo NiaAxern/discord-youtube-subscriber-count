@@ -177,3 +177,8 @@ dist
 
 # Bun lockfile
 bun.lockb
+
+
+# env
+.env.local
+.env
