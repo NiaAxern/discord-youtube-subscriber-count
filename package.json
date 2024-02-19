@@ -2,6 +2,10 @@
   "name": "self-host-subscriber-bot",
   "module": "index.ts",
   "type": "module",
+  "scripts": {
+    "dev": "echo Checking linting... &&bunx eslint . && echo All look good. Running the script... && bun run src/index.ts --dev",
+    "start": "bun run src/index.ts"
+  },
   "devDependencies": {
     "@types/bun": "latest",
     "@types/eslint__js": "^8.42.3"
@@ -12,6 +16,8 @@
   "dependencies": {
     "discord.js": "^14.14.1",
     "eslint": "^8.56.0",
+    "pino": "^8.19.0",
+    "pino-pretty": "^10.3.1",
     "typescript": "^5.0.0",
     "typescript-eslint": "^7.0.1"
   }

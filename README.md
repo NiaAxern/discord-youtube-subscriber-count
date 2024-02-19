@@ -1,4 +1,5 @@
 # Self-hostable YouTube Sub Notifier Bot
+(This is my first time setting up an opensource repository so that other could read the code so im so sorry for the mess i have done lol)
 
 To install dependencies:
 
