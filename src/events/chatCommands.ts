@@ -1,5 +1,4 @@
 /** @format */
-
 import { Events } from 'discord.js';
 import djs_client from '../client';
 
