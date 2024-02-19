@@ -185,3 +185,6 @@ bun.lockb
 
 # cache
 cache
+
+# Pino logging
+pino-logger.log

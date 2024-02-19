@@ -10,8 +10,8 @@ const getDir = (await fs.readdir('src/commands')).map((value) => {
 const hash = await getHashOfFolder(getDir);
 if (!hash)
 	throw 'There is no hash for the commands folder. Something very much went wrong in the code.';
-logger.info('This is the hash: ' + hash);
-logger.info('Checking cached hash...');
+logger.debug('This is the hash: ' + hash);
+logger.debug('Checking cached hash...');
 try {
 	await fs.readdir('cache');
 } catch {
@@ -30,12 +30,13 @@ if (getHash != hash) {
 import commands from './commands';
 import { REST, Routes } from 'discord.js';
 import type { CommandType } from './types/commands';
+if(triggerUpdate == false) logger.debug('Hash hasn\'t changed.');
 if (triggerUpdate == true) {
 	try {
 		if (!process.env.DISCORD_TOKEN)
 			throw "No token provided. Add the bot's DISCORD_TOKEN to the .env.local file.";
 		const rest = new REST().setToken(process.env.DISCORD_TOKEN);
-		logger.info(
+		logger.debug(
 			`Started refreshing ${commands.size} application (/) commands.`,
 		);
 		// FIXME: not to use 'any'. also this workaround for eslint is dumb.
@@ -50,7 +51,7 @@ if (triggerUpdate == true) {
 			}),
 		});
 
-		logger.info(
+		logger.debug(
 			`Successfully reloaded ${data.length} application (/) commands.`,
 		);
 	} catch (error) {
