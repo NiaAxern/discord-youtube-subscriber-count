@@ -10,7 +10,10 @@ const commands: Commands = {
 			.setName('ping')
 			.setDescription('Check the ping of the bot!'),
 		execute: async (interaction) => {
-			await interaction.reply(`Ping: ${interaction.client.ws.ping}ms`);
+			await interaction.reply({
+				ephemeral: true,
+				content: `Ping: ${interaction.client.ws.ping}ms`,
+			});
 		},
 	},
 };
