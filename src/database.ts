@@ -60,9 +60,8 @@ function getSubscriberNoSubID(discord_channel: string, channel_ID: string) {
 	);
 }
 function isSubscribed(channel_id: string, discord_channel: string) {
-	const getSubscribers = getYTChannelSubscribers(channel_id);
-	const getSub = getSubscribers?.findIndex(
-		(record) => record?.discord_channel == discord_channel,
+	const getSub = subscribes?.findIndex(
+		(record) => record?.discord_channel == discord_channel && record?.channel_id == channel_id,
 	);
 	return getSub != -1;
 }
@@ -73,9 +72,13 @@ function subscribe(
 	user_id: string,
 	guild_id?: string,
 ) {
-	if (isSubscribed(channel_ID, discord_channel) == true) return false;
+	const isSub = isSubscribed(channel_ID, discord_channel);
+	logger.debug({isSub, channel_ID,isGuild,discord_channel,user_id,guild_id})
+	if (isSub == true) return false;
 	const checkChannel = getYTChannelIndex(channel_ID);
+	logger.debug({checkChannel})
 	const generateSubscriberID = crypto.randomUUID();
+	logger.debug({generateSubscriberID})
 	if (checkChannel == -1) {
 		youtube_channels.push({
 			channel_id: channel_ID,
