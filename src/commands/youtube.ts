@@ -23,7 +23,7 @@ const commands: Commands = {
 				option
 					.setName('query')
 					.setDescription('Query to search with.')
-					.setRequired(false)
+					.setRequired(true)
 					.setAutocomplete(true),
 			)
 			.addChannelOption((option) =>
@@ -234,6 +234,36 @@ const commands: Commands = {
 			return await interaction.editReply(opt);
 		},
 		autoComplete: async (interaction) => {
+			const isDM = interaction.inGuild() == false;
+			if (isDM == true && config.bot.privateMessages == false)
+				return await interaction.respond([]);
+			else if (isDM == false) {
+				const hasPermissions =
+					interaction.memberPermissions?.has('Administrator') ||
+					interaction.memberPermissions?.has('ManageGuild') ||
+					interaction.memberPermissions?.has('ManageChannels') ||
+					false;
+				if (hasPermissions == false) return await interaction.respond([]);
+				const botPermissions =
+					(interaction.channel
+						?.permissionsFor(interaction.client.user)
+						?.has('SendMessages') &&
+						interaction.channel
+							?.permissionsFor(interaction.client.user)
+							?.has('EmbedLinks') &&
+						interaction.channel
+							?.permissionsFor(interaction.client.user)
+							?.has('AddReactions') &&
+						interaction.channel
+							?.permissionsFor(interaction.client.user)
+							?.has('AttachFiles') &&
+						interaction.channel
+							?.permissionsFor(interaction.client.user)
+							?.has('SendMessagesInThreads')) ||
+					false;
+
+				if (botPermissions == false) return await interaction.respond([]);
+			}
 			const userQuery = interaction.options?.getString('query');
 			if (userQuery == '' || !userQuery) return await interaction.respond([]);
 			if (userQuery.length == 24 && userQuery.startsWith('UC'))
@@ -270,7 +300,7 @@ const commands: Commands = {
 				option
 					.setName('query')
 					.setDescription('Query to search with.')
-					.setRequired(false)
+					.setRequired(true)
 					.setAutocomplete(true),
 			)
 			.addChannelOption((option) =>
@@ -448,6 +478,36 @@ const commands: Commands = {
 			return await interaction.editReply(opt);
 		},
 		autoComplete: async (interaction) => {
+			const isDM = interaction.inGuild() == false;
+			if (isDM == true && config.bot.privateMessages == false)
+				return await interaction.respond([]);
+			else if (isDM == false) {
+				const hasPermissions =
+					interaction.memberPermissions?.has('Administrator') ||
+					interaction.memberPermissions?.has('ManageGuild') ||
+					interaction.memberPermissions?.has('ManageChannels') ||
+					false;
+				if (hasPermissions == false) return await interaction.respond([]);
+				const botPermissions =
+					(interaction.channel
+						?.permissionsFor(interaction.client.user)
+						?.has('SendMessages') &&
+						interaction.channel
+							?.permissionsFor(interaction.client.user)
+							?.has('EmbedLinks') &&
+						interaction.channel
+							?.permissionsFor(interaction.client.user)
+							?.has('AddReactions') &&
+						interaction.channel
+							?.permissionsFor(interaction.client.user)
+							?.has('AttachFiles') &&
+						interaction.channel
+							?.permissionsFor(interaction.client.user)
+							?.has('SendMessagesInThreads')) ||
+					false;
+
+				if (botPermissions == false) return await interaction.respond([]);
+			}
 			const userQuery = interaction.options?.getString('query');
 			if (userQuery == '' || !userQuery) return await interaction.respond([]);
 			if (userQuery.length == 24 && userQuery.startsWith('UC'))
