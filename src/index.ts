@@ -71,10 +71,11 @@ logger.debug(
 );
 logger.debug('Testing cache...');
 import Cache from './cache';
-const testCache = new Cache(); // use default
-await testCache.set('test', 'true');
-logger.debug(await testCache.get('test'));
+const cacheSystem = new Cache(); // use default
+await cacheSystem.set('test', 'true');
+logger.debug(await cacheSystem.get('test'));
 logger.debug('everything seems to be working fine now.');
 
 logger.debug('Initialize client and start the bot as there are no errors :)');
 import './client';
+export { cacheSystem };

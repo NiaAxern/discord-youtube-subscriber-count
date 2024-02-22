@@ -342,8 +342,4 @@ async function searchChannel(query: string): Promise<Channel[]> {
 	);
 }
 
-export {
-	getChannel_About,
-	getChannel_Main,
-	searchChannel,
-};
+export { getChannel_About, getChannel_Main, searchChannel };

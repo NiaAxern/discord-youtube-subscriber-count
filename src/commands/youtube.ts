@@ -1,13 +1,16 @@
 /** @format */
 
-import { ChannelType, EmbedBuilder, SlashCommandBuilder } from 'discord.js';
+import { ChannelType, SlashCommandBuilder } from 'discord.js';
 
 import type { Commands } from '../types/commands';
 
-import { searchChannel } from '../innertube/functions';
+import { getChannel_Main, searchChannel } from '../innertube/functions';
 
 import config from '../../config';
+import { QuickMakeEmbed } from '../utilities';
 
+import { cacheSystem } from '..';
+import type { Channel } from '../types/channelType';
 const commands: Commands = {
 	track: {
 		data: new SlashCommandBuilder()
@@ -41,141 +44,172 @@ const commands: Commands = {
 				interaction.options?.get('text_channel')?.channel?.id ??
 				interaction.channelId;
 			const getID: string =
-				interaction.options?.get('query')?.value?.toString() ?? '';
-			if (getID.length != 24 || getID.startsWith('UC') == false) {
-				await interaction.editReply({
+				interaction.options?.get('query')?.value?.toString() ??
+				"(You didn't enter any channelID's";
+			if (getID.length != 24 || getID.startsWith('UC') == false)
+				return await interaction.editReply({
 					embeds: [
-						new EmbedBuilder()
-							.setColor('Red')
-							.setTitle('Incorrect YouTube channel id!')
-							.setDescription(
-								`The channel id \`${getID}\` is not a valid channel id.`,
-							)
-							.setTimestamp()
-							.setFooter({
-								text: interaction.client.user.displayName,
-								iconURL:
-									interaction.client.user?.avatarURL() ??
-									'https://cdn.discordapp.com/embed/avatars/0.png',
-							}),
+						QuickMakeEmbed(
+							{
+								color: 'Red',
+								title: 'Incorrect YouTube channel id!',
+								description: `The channel id \`${getID}\` is not a valid channel id.`,
+							},
+							interaction,
+						),
 					],
 				});
-				return;
-			}
-			if (getID)
-				if (isDM == true) {
-					if (config.bot.privateMessages == false) {
-						await interaction.editReply({
-							embeds: [
-								new EmbedBuilder()
-									.setColor('Red')
-									.setTitle(
-										'Tracking channels in direct messages has been disabled.',
-									)
-									.setDescription(
-										`If you are the owner of the bot, enable it in the \`config.ts\` file.`,
-									)
-									.setTimestamp()
-									.setFooter({
-										text: interaction.client.user.displayName,
-										iconURL:
-											interaction.client.user?.avatarURL() ??
-											'https://cdn.discordapp.com/embed/avatars/0.png',
-									}),
-							],
-						});
-						return;
-					} else {
-						await interaction.editReply({
-							content: `WIP2.`,
-						});
-					}
-				} else {
-					const hasPermissions =
-						interaction.memberPermissions?.has('Administrator') ||
-						interaction.memberPermissions?.has('ManageGuild') ||
-						interaction.memberPermissions?.has('ManageChannels') ||
-						false;
-					if (hasPermissions == false) {
-						await interaction.editReply({
-							embeds: [
-								new EmbedBuilder()
-									.setColor('Red')
-									.setTitle("You don't have permissions")
-									.setDescription(
-										`Here are the permissions that you need to atleast one enabled:
+			if (isDM == true && config.bot.privateMessages == false)
+				return await interaction.editReply({
+					embeds: [
+						QuickMakeEmbed(
+							{
+								color: 'Red',
+								title:
+									'Tracking channels in direct messages has been disabled.',
+								description: `If you are the owner of the bot, enable it in the \`config.ts\` file.`,
+							},
+							interaction,
+						),
+					],
+				});
+			else if (isDM == false) {
+				const hasPermissions =
+					interaction.memberPermissions?.has('Administrator') ||
+					interaction.memberPermissions?.has('ManageGuild') ||
+					interaction.memberPermissions?.has('ManageChannels') ||
+					false;
+				if (hasPermissions == false)
+					return await interaction.editReply({
+						embeds: [
+							QuickMakeEmbed(
+								{
+									color: 'Red',
+									title: "You don't have permissions",
+									description: `Here are the permissions that you need to atleast one enabled:
 									**Administrator**: ${interaction.memberPermissions?.has('Administrator')}
 									**ManageGuild**: ${interaction.memberPermissions?.has('ManageGuild')}
 									**ManageChannels**: ${interaction.memberPermissions?.has('ManageChannels')}`,
-									)
-									.setTimestamp()
-									.setFooter({
-										text: interaction.client.user.displayName,
-										iconURL:
-											interaction.client.user?.avatarURL() ??
-											'https://cdn.discordapp.com/embed/avatars/0.png',
-									}),
-							],
-						});
-						return;
-					}
-					const botPermissions =
-						(interaction.channel
-							?.permissionsFor(interaction.client.user)
-							?.has('SendMessages') &&
-							interaction.channel
-								?.permissionsFor(interaction.client.user)
-								?.has('EmbedLinks') &&
-							interaction.channel
-								?.permissionsFor(interaction.client.user)
-								?.has('AddReactions') &&
-							interaction.channel
-								?.permissionsFor(interaction.client.user)
-								?.has('AttachFiles') &&
-							interaction.channel
-								?.permissionsFor(interaction.client.user)
-								?.has('SendMessagesInThreads')) ||
-						false;
-
-					if (botPermissions == false) {
-						await interaction.editReply({
-							embeds: [
-								new EmbedBuilder()
-									.setColor('Red')
-									.setTitle("The bot doesn't have permissions")
-									.setDescription(
-										`Here are the permissions that the bot has to have enabled:
-									**SendMessages**: ${interaction.channel
-										?.permissionsFor(interaction.client.user)
-										?.has('SendMessages')}
-									**EmbedLinks**: ${interaction.channel
-										?.permissionsFor(interaction.client.user)
-										?.has('EmbedLinks')}
-									**AddReactions**: ${interaction.channel
-										?.permissionsFor(interaction.client.user)
-										?.has('AddReactions')}
-									**AttachFiles**: ${interaction.channel
-										?.permissionsFor(interaction.client.user)
-										?.has('AttachFiles')}
-									**SendMessagesInThreads**: ${interaction.channel
-										?.permissionsFor(interaction.client.user)
-										?.has('SendMessagesInThreads')}`,
-									)
-									.setTimestamp()
-									.setFooter({
-										text: interaction.client.user.displayName,
-										iconURL:
-											interaction.client.user?.avatarURL() ??
-											'https://cdn.discordapp.com/embed/avatars/0.png',
-									}),
-							],
-						});
-						return;
-					}
-					await interaction.editReply({
-						content: `<@${interaction.user.id}> <#${getChannel}> ytchannel ${getID} in ${interaction.guild?.name}`,
+								},
+								interaction,
+							),
+						],
 					});
-				}
+				const botPermissions =
+					(interaction.channel
+						?.permissionsFor(interaction.client.user)
+						?.has('SendMessages') &&
+						interaction.channel
+							?.permissionsFor(interaction.client.user)
+							?.has('EmbedLinks') &&
+						interaction.channel
+							?.permissionsFor(interaction.client.user)
+							?.has('AddReactions') &&
+						interaction.channel
+							?.permissionsFor(interaction.client.user)
+							?.has('AttachFiles') &&
+						interaction.channel
+							?.permissionsFor(interaction.client.user)
+							?.has('SendMessagesInThreads')) ||
+					false;
+
+				if (botPermissions == false)
+					return await interaction.editReply({
+						embeds: [
+							QuickMakeEmbed(
+								{
+									color: 'Red',
+									title: "The bot doesn't have permissions",
+									description: `Here are the permissions that the bot has to have enabled:
+										**SendMessages**: ${interaction.channel
+											?.permissionsFor(interaction.client.user)
+											?.has('SendMessages')}
+										**EmbedLinks**: ${interaction.channel
+											?.permissionsFor(interaction.client.user)
+											?.has('EmbedLinks')}
+										**AddReactions**: ${interaction.channel
+											?.permissionsFor(interaction.client.user)
+											?.has('AddReactions')}
+										**AttachFiles**: ${interaction.channel
+											?.permissionsFor(interaction.client.user)
+											?.has('AttachFiles')}
+										**SendMessagesInThreads**: ${interaction.channel
+											?.permissionsFor(interaction.client.user)
+											?.has('SendMessagesInThreads')}`,
+								},
+								interaction,
+							),
+						],
+					});
+			}
+			const checkCache = await cacheSystem.get(getID).catch(() => {
+				return null;
+			});
+			let channel: Channel =
+				checkCache != null ? await JSON.parse(checkCache) : null;
+			if (!checkCache) {
+				channel = await getChannel_Main(getID);
+			}
+			if (!channel.channel_id)
+				// we got this far so everything seems to be fine!
+				return await interaction.editReply({
+					embeds: [
+						QuickMakeEmbed(
+							{
+								color: 'Red',
+								title: 'Channel was not found.',
+								description: `The channel \`${getID}\` was NOT found.`,
+							},
+							interaction,
+						),
+					],
+				});
+
+			// after everything has been successfully been done we respond with the all done message!
+			let getText = interaction.client.channels.cache.get(getChannel);
+			if (!getText) {
+				await interaction.client.channels.fetch(getChannel);
+				getText = interaction.client.channels.cache.get(getChannel);
+			}
+			if (!getText)
+				return await interaction.editReply({
+					embeds: [
+						QuickMakeEmbed(
+							{
+								color: 'Red',
+								title: 'Something went wrong.',
+								description: `We can't find the discord channel <#${getID}>.\nThis should rarely happen.`,
+							},
+							interaction,
+						),
+					],
+				});
+			const opt = {
+				embeds: [
+					QuickMakeEmbed(
+						{
+							color: 'Green',
+							title: `Channel has been successfully added for tracking in <#${getChannel}>!`,
+							description: `**${channel.title}** with ${
+								channel.subscribers?.toLocaleString("en-US")
+							} subscribers has been tracked by <@${
+								interaction.user.id
+							}> to <#${getChannel}> ${
+								interaction.guild?.name != null
+									? `in **${interaction.guild?.name}**`
+									: ''
+							}`,
+						},
+						interaction,
+					)
+						.setThumbnail(channel.avatar ?? null)
+						.setURL('https://www.youtube.com/channel/' + getID),
+				],
+			};
+			if (getText.isTextBased() == true && getText.isDMBased() == false) {
+				await getText.send(opt);
+			}
+			return await interaction.editReply(opt);
 		},
 		autoComplete: async (interaction) => {
 			const userQuery = interaction.options?.getString('query');

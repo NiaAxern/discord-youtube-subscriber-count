@@ -34,6 +34,12 @@ export function formatLargeNumber(input: string) {
 	return formattedValue;
 }
 
+import {
+	EmbedBuilder,
+	type CacheType,
+	type CommandInteraction,
+	type ColorResolvable,
+} from 'discord.js';
 import { Hash, createHash } from 'node:crypto';
 import { readdir, stat } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -62,4 +68,30 @@ export async function getHashOfFolder(paths: string[], inputHash?: Hash) {
 		return hash.digest().toString('base64');
 	}
 	return;
+}
+
+// For quick embeds...
+export function QuickMakeEmbed(
+	{
+		color,
+		title,
+		description,
+	}: {
+		color: ColorResolvable;
+		title: string;
+		description: string;
+	},
+	interaction: CommandInteraction<CacheType>,
+) {
+	return new EmbedBuilder()
+		.setColor(color)
+		.setTitle(title)
+		.setDescription(description)
+		.setTimestamp()
+		.setFooter({
+			text: interaction.client.user.displayName,
+			iconURL:
+				interaction.client.user?.avatarURL() ??
+				'https://cdn.discordapp.com/embed/avatars/0.png',
+		});
 }

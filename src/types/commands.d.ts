@@ -9,8 +9,11 @@ import type {
 
 interface CommandType {
 	data: SlashCommandBuilder;
-	execute: (interaction: CommandInteraction<CacheType>) => Promise<void>;
-	autoComplete?: (interaction: AutocompleteInteraction<CacheType>) => Promise<void>;
+	// its any because we don't need anything back from the executes and using return await interaction ... is cleaner than await interaction ... \n return
+	execute: (interaction: CommandInteraction<CacheType>) => Promise<any>; // eslint-disable-line
+	autoComplete?: (
+		interaction: AutocompleteInteraction<CacheType>,
+	) => Promise<any>; // eslint-disable-line
 }
 interface Commands {
 	ping?: CommandType;

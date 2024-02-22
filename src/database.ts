@@ -68,7 +68,6 @@ async function refreshFile() {
 		const start = performance.now();
 		lastSaveTime = start;
 		updatePossible = false;
-		logger.debug('saving meta file');
 		const data = await compress(
 			JSON.stringify({ youtube_channels, subscribes }),
 		);

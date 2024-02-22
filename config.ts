@@ -6,7 +6,7 @@ export default {
 		port: null, // Any port between 1-65535 or null to make it random.
 	},
 	bot: {
-		privateMessages: false, // allow tracking to be done in private messages
+		privateMessages: true, // allow tracking to be done in private messages
 	},
 	youtube: {
 		api: 'data-api-v3', // data-api-v3 or innertube
