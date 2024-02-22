@@ -16,7 +16,7 @@ class Cache {
 	// See... there is a possible vulnerability that if we accept . or / you could just get anything in the file system...
 	// So this regex checking should 'patch' it. though this is going to be mostly used for channel id's provided by YouTube so idk if the issue will ever happen...
 	async get(key: string) {
-		key = key.replace(/\\|\//g, '').replace(/\./g, ''); // FIXME: learn regex so i can combine these 2 into 1.
+		key = key.replace(/[\\\/.]/g, ''); // Replaces backslashes (\), forward slashes (/), and periods (.)
 		const getMemory = this.memCache.get(key);
 		if (getMemory) return getMemory != '' ? getMemory : null;
 		const getFile = Bun.file(this.cachepath + '/' + 'cache_' + key);
@@ -29,7 +29,7 @@ class Cache {
 		return getData;
 	}
 	async set(key: string, data: string) {
-		key = key.replace(/\\|\//g, '').replace(/\./g, ''); // FIXME: above fixme ^^
+		key = key.replace(/[\\\/.]/g, ''); // Sane regex as above ^^
 		this.memCache.set(key, data);
 		await fs.writeFile(this.cachepath + '/' + 'cache_' + key, data); // we'll save it to the disk...
 	}
