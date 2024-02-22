@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "echo Checking linting... &&bunx eslint . && echo All look good. Running the script... && bun run src/index.ts --dev",
     "start": "bun run src/index.ts",
-    "lint": "echo Checking linting... &&bunx eslint . && echo All good!"
+    "lint": "echo Checking linting... &&bunx eslint . && echo All good!",
+    "updateVersion": "echo Getting version... && "
   },
   "devDependencies": {
     "@types/bun": "latest",

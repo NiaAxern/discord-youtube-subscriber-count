@@ -68,7 +68,7 @@ const commands: Commands = {
 								color: 'Red',
 								title:
 									'Tracking channels in direct messages has been disabled.',
-								description: `If you are the owner of the bot, enable it in the \`config.ts\` file.`,
+								description: `If you are the owner of the bot, enable it in the \`config.ts\` file.\n\n**Aren't the owner?** Host your own version of the bot!\nJust grab the code from our [Github](<https://github.com/NiaAxern/discord-youtube-subscriber-count>), set it up and run it!`,
 							},
 							interaction,
 						),

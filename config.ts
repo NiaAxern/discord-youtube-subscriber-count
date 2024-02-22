@@ -2,6 +2,7 @@
 
 export default {
 	http: {
+		// TODO: http support
 		enabled: false, // true or false.
 		port: null, // Any port between 1-65535 or null to make it random.
 	},
