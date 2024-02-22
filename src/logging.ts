@@ -16,8 +16,13 @@ const logger = pino({
 			},
 			{
 				level: 'trace',
-				target: 'pino/file',
-				options: { destination: './pino-logger.log' },
+				target: 'pino-roll',
+				options: {
+					file: 'logs/pino-logger.log',
+					size: '1m',
+					frequency: 'daily',
+					mkdir: true,
+				},
 			},
 		],
 	},

@@ -6,7 +6,12 @@ import logger from './logging';
 import fs from 'fs/promises';
 
 const getEvents = await fs.readdir('src/events');
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client = new Client({
+	intents: [GatewayIntentBits.Guilds],
+	allowedMentions: {
+		parse: ['everyone', 'users'],
+	},
+});
 client.on('error', (error) => {
 	logger.error(error);
 });
@@ -14,5 +19,5 @@ client.on('error', (error) => {
 client.login(process.env.DISCORD_TOKEN);
 export default client;
 for await (const file of getEvents) {
-	await import('./events/' + file);
+	await import('./events/' + file); // auto-load events
 }

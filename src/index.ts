@@ -1,5 +1,4 @@
 /** @format */
-import './client';
 
 import { getHashOfFolder } from './utilities';
 import fs from 'fs/promises';
@@ -25,12 +24,11 @@ const getHash = (
 let triggerUpdate = false;
 if (getHash != hash) {
 	triggerUpdate = true;
-	await fs.writeFile('cache/hash', hash);
 }
 import commands from './commands';
 import { REST, Routes } from 'discord.js';
 import type { CommandType } from './types/commands';
-if(triggerUpdate == false) logger.debug('Hash hasn\'t changed.');
+if (triggerUpdate == false) logger.debug("Hash hasn't changed.");
 if (triggerUpdate == true) {
 	try {
 		if (!process.env.DISCORD_TOKEN)
@@ -40,21 +38,43 @@ if (triggerUpdate == true) {
 			`Started refreshing ${commands.size} application (/) commands.`,
 		);
 		// FIXME: not to use 'any'. also this workaround for eslint is dumb.
-		const getID: any /*eslint-disable-line*/ = (await rest.get(Routes.currentApplication())) || {
+		const getID: any /*eslint-disable-line*/ = (await rest.get(
+			Routes.currentApplication(),
+		)) || {
 			id: null,
 		};
 		if (!getID?.id) throw 'No application was found with this token.';
-		// FIXME: not to use 'any' 2.
-		const data: any /*eslint-disable-line*/ = await rest.put(Routes.applicationCommands(getID.id), {
-			body: [...commands.values()].map((a: CommandType) => {
-				return a.data.toJSON();
-			}),
-		});
+		logger.debug('Now sending ' + commands.size + ' commands to Discord.');
+		// FIXME: look at the above fixme
+		const data: any /*eslint-disable-line*/ = await rest.put(
+			Routes.applicationCommands(getID.id),
+			{
+				body: [...commands.values()].map((a: CommandType) => {
+					return a.data.toJSON();
+				}),
+			},
+		);
 
 		logger.debug(
 			`Successfully reloaded ${data.length} application (/) commands.`,
 		);
+		await fs.writeFile('cache/hash', hash);
 	} catch (error) {
 		logger.error(error);
 	}
 }
+
+logger.debug('Getting meta.json');
+import { getGlobalTrackCount } from './database';
+logger.debug(
+	'There are ' + getGlobalTrackCount().toLocaleString() + ' trackings',
+);
+logger.debug('Testing cache...');
+import Cache from './cache';
+const testCache = new Cache(); // use default
+await testCache.set('test', 'true');
+logger.debug(await testCache.get('test'));
+logger.debug('everything seems to be working fine now.');
+
+logger.debug('Initialize client and start the bot as there are no errors :)');
+import './client';

@@ -1,6 +1,6 @@
 /** @format */
 
-import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
+import { ChannelType, EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 
 import type { Commands } from '../types/commands';
 
@@ -17,19 +17,26 @@ const commands: Commands = {
 				option
 					.setName('query')
 					.setDescription('Query to search with.')
-					.setRequired(false),
+					.setRequired(false)
+					.setAutocomplete(true),
 			)
 			.addChannelOption((option) =>
 				option
 					.setName('text_channel')
 					.setDescription('The channel to send the notifications to.')
-					.setRequired(false),
+					.setRequired(false)
+					.addChannelTypes(ChannelType.GuildAnnouncement)
+					.addChannelTypes(ChannelType.GuildText)
+					.addChannelTypes(ChannelType.PublicThread),
 			)
 			.setDescription(
 				'Track a channel and their subscribers here or a different channel.',
 			),
 		execute: async (interaction) => {
 			const isDM = interaction.inGuild() == false;
+			const getChannel =
+				interaction.options?.get('text_channel')?.channel?.id ??
+				interaction.channelId;
 			if (isDM == true) {
 				if (config.bot.privateMessages == false) {
 					await interaction.reply({
@@ -53,9 +60,14 @@ const commands: Commands = {
 						ephemeral: true,
 					});
 					return;
+				} else {
+					await interaction.reply({
+						ephemeral: true,
+						content: `WIP2.`,
+					});
 				}
 			} else {
-				let hasPermissions =
+				const hasPermissions =
 					interaction.memberPermissions?.has('Administrator') ||
 					interaction.memberPermissions?.has('ManageGuild') ||
 					interaction.memberPermissions?.has('ManageChannels') ||
@@ -68,9 +80,9 @@ const commands: Commands = {
 								.setTitle("You don't have permissions")
 								.setDescription(
 									`Here are the permissions that you need to atleast one enabled:
-								**Administrator**: ${interaction.memberPermissions?.has('Administrator')}
-								**ManageGuild**: ${interaction.memberPermissions?.has('ManageGuild')}
-								**ManageChannels**: ${interaction.memberPermissions?.has('ManageChannels')}`,
+									**Administrator**: ${interaction.memberPermissions?.has('Administrator')}
+									**ManageGuild**: ${interaction.memberPermissions?.has('ManageGuild')}
+									**ManageChannels**: ${interaction.memberPermissions?.has('ManageChannels')}`,
 								)
 								.setTimestamp()
 								.setFooter({
@@ -84,7 +96,7 @@ const commands: Commands = {
 					});
 					return;
 				}
-				let botPermissions =
+				const botPermissions =
 					(interaction.channel
 						?.permissionsFor(interaction.client.user)
 						?.has('SendMessages') &&
@@ -110,21 +122,21 @@ const commands: Commands = {
 								.setTitle("The bot doesn't have permissions")
 								.setDescription(
 									`Here are the permissions that the bot has to have enabled:
-								**SendMessages**: ${interaction.channel
-									?.permissionsFor(interaction.client.user)
-									?.has('SendMessages')}
-								**EmbedLinks**: ${interaction.channel
-									?.permissionsFor(interaction.client.user)
-									?.has('EmbedLinks')}
-								**AddReactions**: ${interaction.channel
-									?.permissionsFor(interaction.client.user)
-									?.has('AddReactions')}
-								**AttachFiles**: ${interaction.channel
-									?.permissionsFor(interaction.client.user)
-									?.has('AttachFiles')}
-								**SendMessagesInThreads**: ${interaction.channel
-									?.permissionsFor(interaction.client.user)
-									?.has('SendMessagesInThreads')}`,
+									**SendMessages**: ${interaction.channel
+										?.permissionsFor(interaction.client.user)
+										?.has('SendMessages')}
+									**EmbedLinks**: ${interaction.channel
+										?.permissionsFor(interaction.client.user)
+										?.has('EmbedLinks')}
+									**AddReactions**: ${interaction.channel
+										?.permissionsFor(interaction.client.user)
+										?.has('AddReactions')}
+									**AttachFiles**: ${interaction.channel
+										?.permissionsFor(interaction.client.user)
+										?.has('AttachFiles')}
+									**SendMessagesInThreads**: ${interaction.channel
+										?.permissionsFor(interaction.client.user)
+										?.has('SendMessagesInThreads')}`,
 								)
 								.setTimestamp()
 								.setFooter({
@@ -140,9 +152,19 @@ const commands: Commands = {
 				}
 				await interaction.reply({
 					ephemeral: true,
-					content: `WIP.`,
+					content: `<@${interaction.user.id}> <#${getChannel}> in ${interaction.guild?.name}`,
 				});
 			}
+		},
+		autoComplete: async (interaction) => {
+			return await interaction.respond([
+				{
+					// What is shown to the user
+					name: 'Command Help',
+					// What is actually used as the option.
+					value: 'help',
+				},
+			]);
 		},
 	},
 };

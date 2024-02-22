@@ -183,8 +183,10 @@ bun.lockb
 .env.local
 .env
 
-# cache
+# cache & data
 cache
+data
 
 # Pino logging
 pino-logger.log
+logs
