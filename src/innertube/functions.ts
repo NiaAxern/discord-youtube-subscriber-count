@@ -330,16 +330,13 @@ async function searchChannel(query: string): Promise<Channel[]> {
 			return {
 				avatar: channel.channelRenderer.thumbnail.thumbnails[0].url,
 				title: channel.channelRenderer.longBylineText.runs[0].text,
-				handle:
-					data.header.c4TabbedHeaderRenderer.channelHandleText.runs[0].text,
+				handle: channel.channelRenderer.subscriberCountText.simpleText,
 				channel_id: channel.channelRenderer.channelId,
 				subscribers: formatLargeNumber(
-					data.header.c4TabbedHeaderRenderer.subscriberCountText.simpleText,
+					channel.channelRenderer.videoCountText.simpleText, // what
 				),
 				views: undefined,
-				videos: formatLargeNumber(
-					data.header.c4TabbedHeaderRenderer.videosCountText.runs[0].text,
-				),
+				videos: undefined,
 			};
 		},
 	);
