@@ -73,12 +73,9 @@ function subscribe(
 	guild_id?: string,
 ) {
 	const isSub = isSubscribed(channel_ID, discord_channel);
-	logger.debug({isSub, channel_ID,isGuild,discord_channel,user_id,guild_id})
 	if (isSub == true) return false;
 	const checkChannel = getYTChannelIndex(channel_ID);
-	logger.debug({checkChannel})
 	const generateSubscriberID = crypto.randomUUID();
-	logger.debug({generateSubscriberID})
 	if (checkChannel == -1) {
 		youtube_channels.push({
 			channel_id: channel_ID,
