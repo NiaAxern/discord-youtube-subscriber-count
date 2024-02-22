@@ -4,6 +4,12 @@
 // tbf this looks way better than my old code :)
 export function formatLargeNumber(input: string) {
 	if (!input || input == null) return null;
+	input = input
+		.replace(' subscribers', '')
+		.replace(' subscriber', '')
+		.replace(' subs', ''); //FIXME: better way of removing spaces
+	//and subscriber(s) text from ex. 240K subscribers
+
 	// Extract the numeric part from the input string
 	const numericString: string | undefined = input.match(/\d+(\.\d+)?/)?.[0];
 	if (!numericString) return null;

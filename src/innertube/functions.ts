@@ -328,12 +328,12 @@ async function searchChannel(query: string): Promise<Channel[]> {
 	return data.contents.twoColumnSearchResultsRenderer.primaryContents.sectionListRenderer.contents[0].itemSectionRenderer.contents.map(
 		(channel: any /*eslint-disable-line*/) => {
 			return {
-				avatar: channel.channelRenderer.thumbnail.thumbnails[0].url,
-				title: channel.channelRenderer.longBylineText.runs[0].text,
-				handle: channel.channelRenderer.subscriberCountText.simpleText,
+				avatar: channel?.channelRenderer?.thumbnail?.thumbnails?.[0]?.url,
+				title: channel?.channelRenderer?.longBylineText?.runs?.[0]?.text,
+				handle: channel?.channelRenderer?.subscriberCountText?.simpleText,
 				channel_id: channel.channelRenderer.channelId,
 				subscribers: formatLargeNumber(
-					channel.channelRenderer.videoCountText.simpleText, // what
+					channel?.channelRenderer?.videoCountText?.simpleText, // what
 				),
 				views: undefined,
 				videos: undefined,
@@ -342,7 +342,7 @@ async function searchChannel(query: string): Promise<Channel[]> {
 	);
 }
 
-export default {
+export {
 	getChannel_About,
 	getChannel_Main,
 	searchChannel,

@@ -4,6 +4,8 @@ import { ChannelType, EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 
 import type { Commands } from '../types/commands';
 
+import { searchChannel } from '../innertube/functions';
+
 import config from '../../config';
 
 const commands: Commands = {
@@ -157,14 +159,23 @@ const commands: Commands = {
 			}
 		},
 		autoComplete: async (interaction) => {
-			return await interaction.respond([
-				{
-					// What is shown to the user
-					name: 'Command Help',
-					// What is actually used as the option.
-					value: 'help',
-				},
-			]);
+			const userQuery = interaction.options?.getString('query');
+			if (userQuery == '' || !userQuery) return await interaction.respond([]);
+			const queryYouTube = await searchChannel(userQuery);
+			return await interaction.respond(
+				queryYouTube.map((channel) => {
+					return {
+						// What is shown to the user
+						name: `${channel.title} (${channel.handle}): ${
+							!channel?.subscribers
+								? 'No'
+								: channel.subscribers?.toLocaleString('en-US')
+						} subscriber${channel.subscribers == 1 ? '' : 's'}`,
+						// What is actually used as the option.
+						value: channel.channel_id,
+					};
+				}),
+			);
 		},
 	},
 };
