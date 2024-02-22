@@ -11,6 +11,7 @@ import { QuickMakeEmbed } from '../utilities';
 
 import { cacheSystem } from '..';
 import type { Channel } from '../types/channelType';
+import { subscribe } from '../database';
 const commands: Commands = {
 	track: {
 		data: new SlashCommandBuilder()
@@ -178,7 +179,26 @@ const commands: Commands = {
 							{
 								color: 'Red',
 								title: 'Something went wrong.',
-								description: `We can't find the discord channel <#${getID}>.\nThis should rarely happen.`,
+								description: `We can't find the discord channel <#${getChannel}>.\nThis should rarely happen.`,
+							},
+							interaction,
+						),
+					],
+				});
+			const subscribeToChannel = subscribe(
+				getID,
+				interaction.guild?.id != null,
+				getChannel,
+				interaction.user.id,
+			);
+			if (subscribeToChannel == false)
+				return await interaction.editReply({
+					embeds: [
+						QuickMakeEmbed(
+							{
+								color: 'Red',
+								title: 'This channel is most likely already tracked',
+								description: `in <#${getChannel}>.`,
 							},
 							interaction,
 						),
@@ -190,9 +210,11 @@ const commands: Commands = {
 						{
 							color: 'Green',
 							title: `Channel has been successfully added for tracking in <#${getChannel}>!`,
-							description: `**${channel.title}** with ${
-								channel.subscribers?.toLocaleString("en-US")
-							} subscribers has been tracked by <@${
+							description: `**${
+								channel.title
+							}** with ${channel.subscribers?.toLocaleString(
+								'en-US',
+							)} subscribers has been tracked by <@${
 								interaction.user.id
 							}> to <#${getChannel}> ${
 								interaction.guild?.name != null

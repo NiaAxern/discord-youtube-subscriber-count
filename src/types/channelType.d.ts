@@ -17,9 +17,9 @@ interface Metafile {
 }
 interface MetaChannel {
 	channel_id: string;
-	subscribers: string[]; // its basically an array of subscriberID's
-	currentUpdate: updateRecord;
-	lastUpdate: updateRecord;
+	subscriberIDs: string[]; // its basically an array of subscriberID's
+	currentUpdate?: updateRecord;
+	lastUpdate?: updateRecord;
 }
 interface updateRecord {
 	subscribers: number;
@@ -39,10 +39,12 @@ interface Averages {
 }
 interface Subscriber {
 	subscriberID: string; // some random generated id
+	channel_id: string;
 	isGuild: boolean; // needed for dm tracking reasons
 	discord_channel: string; // the text / private dm channel id
 	user_id: string;
-	guild_id?:string; // optional, needed for counting how many users are tracked in a guild
+	when: string; // toISOString()
+	guild_id?: string; // optional, needed for counting how many users are tracked in a guild
 }
 
 export { Channel, Metafile, updateRecord, Averages, Subscriber };
