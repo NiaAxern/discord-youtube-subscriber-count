@@ -74,11 +74,6 @@ async function refreshFile() {
 		);
 		await Bun.write('data/meta_temporary.json', data);
 		await fs.rename('data/meta_temporary.json', 'data/meta.json'); // so that it doesnt corrupt when power goes out or the app crashes
-		logger.debug(
-			'saved meta file. it took ' +
-				Math.floor(performance.now() - start).toLocaleString() +
-				'ms',
-		);
 	} catch (e) {
 		logger.error(e);
 	} finally {
