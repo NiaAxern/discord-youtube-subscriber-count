@@ -1,7 +1,7 @@
 <!-- @format -->
 
 # Self-hostable YouTube Sub Notifier Bot
-[Test out the bot.](https://discord.com/api/oauth2/authorize?client_id=1209052576197115934&permissions=536923200&scope=bot+applications.commands)
+[Test out the bot.](https://discord.com/api/oauth2/authorize?client_id=1210530230679371796&permissions=274877958208&scope=bot+applications.commands)
 
 To install dependencies:
 
