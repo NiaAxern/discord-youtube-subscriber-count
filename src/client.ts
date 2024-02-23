@@ -21,3 +21,4 @@ export default client;
 for await (const file of getEvents) {
 	await import('./events/' + file); // auto-load events
 }
+await import('./track-changes');

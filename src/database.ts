@@ -54,14 +54,16 @@ function getSubscriber(subscriberID: string) {
 }
 function getSubscriberNoSubID(discord_channel: string, channel_ID: string) {
 	return subscribes.find(
-		(record:Subscriber) =>
+		(record: Subscriber) =>
 			record.discord_channel == discord_channel &&
 			record.channel_id == channel_ID,
 	);
 }
 function isSubscribed(channel_id: string, discord_channel: string) {
 	const getSub = subscribes?.findIndex(
-		(record) => record?.discord_channel == discord_channel && record?.channel_id == channel_id,
+		(record) =>
+			record?.discord_channel == discord_channel &&
+			record?.channel_id == channel_id,
 	);
 	return getSub != -1;
 }
@@ -137,6 +139,8 @@ async function refreshFile() {
 			JSON.stringify({ youtube_channels, subscribes }),
 		);
 		await Bun.write('data/meta_temporary.json', data);
+		if (process.argv.findIndex((val) => val == '--dev') != -1)
+			await Bun.write('data/meta_developer.json', JSON.stringify({ youtube_channels, subscribes }, null, 2)); // uncompressed. for dev mode!
 		await fs.rename('data/meta_temporary.json', 'data/meta.json'); // so that it doesnt corrupt when power goes out or the app crashes
 	} catch (e) {
 		logger.error(e);
@@ -168,5 +172,7 @@ export {
 	getGlobalTrackCount,
 	isSubscribed,
 	subscribe,
-	unsubscribe
+	unsubscribe,
+	youtube_channels,
+	subscribes,
 };

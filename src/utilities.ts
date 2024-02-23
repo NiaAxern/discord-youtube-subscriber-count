@@ -39,6 +39,7 @@ import {
 	type CacheType,
 	type CommandInteraction,
 	type ColorResolvable,
+	Client,
 } from 'discord.js';
 import { Hash, createHash } from 'node:crypto';
 import { readdir, stat } from 'node:fs/promises';
@@ -81,7 +82,8 @@ export function QuickMakeEmbed(
 		title: string;
 		description: string;
 	},
-	interaction: CommandInteraction<CacheType>,
+	interaction?: CommandInteraction<CacheType>,
+	djs_client?: Client,
 ) {
 	return new EmbedBuilder()
 		.setColor(color)
@@ -89,9 +91,13 @@ export function QuickMakeEmbed(
 		.setDescription(description)
 		.setTimestamp()
 		.setFooter({
-			text: interaction.client.user.displayName,
+			text:
+				interaction?.client.user.displayName ??
+				djs_client?.user?.displayName ??
+				'No name',
 			iconURL:
-				interaction.client.user?.avatarURL() ??
+				interaction?.client?.user?.avatarURL() ??
+				djs_client?.user?.avatarURL() ??
 				'https://cdn.discordapp.com/embed/avatars/0.png',
 		});
 }
@@ -105,4 +111,28 @@ export const dirSize = async (directory: string) => {
 		(accumulator, { size }) => accumulator + size,
 		0,
 	);
+};
+
+export const isValidUrl = (urlString: string) => {
+	try {
+		return Boolean(new URL(urlString));
+	} catch (e) {
+		return false;
+	}
+};
+
+export const howLong = (interval: number) => {
+	const days = Math.floor(interval / (86400 * 1000));
+	const hours = Math.floor(interval / (3600 * 1000)) % 24;
+	const minutes = Math.floor(interval / (60 * 1000)) % 60;
+	const seconds = Math.floor(interval / 1000) % 60;
+	return [
+		[days, 'd'],
+		[hours, 'h'],
+		[minutes, 'm'],
+		[seconds, 's'],
+	]
+		.filter((a) => parseInt(`${a[0]}`) > 0) // thanks typescript
+		.map((a) => a.join(''))
+		.join(', ');
 };

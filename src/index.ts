@@ -75,7 +75,6 @@ const cacheSystem = new Cache(); // use default
 await cacheSystem.set('test', 'true');
 logger.debug(await cacheSystem.get('test'));
 logger.debug('everything seems to be working fine now.');
-
-logger.debug('Initialize client and start the bot as there are no errors :)');
+logger.debug('Initialize client and start the bot as there are no errors.');
 import './client';
 export { cacheSystem };
