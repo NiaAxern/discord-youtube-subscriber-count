@@ -76,6 +76,7 @@ const commands: Commands = {
 				});
 			else if (isDM == false) {
 				const hasPermissions =
+				interaction.guild?.ownerId == interaction.user.id||
 					interaction.memberPermissions?.has('Administrator') ||
 					interaction.memberPermissions?.has('ManageGuild') ||
 					interaction.memberPermissions?.has('ManageChannels') ||
@@ -239,6 +240,7 @@ const commands: Commands = {
 				return await interaction.respond([]);
 			else if (isDM == false) {
 				const hasPermissions =
+				interaction.guild?.ownerId == interaction.user.id||
 					interaction.memberPermissions?.has('Administrator') ||
 					interaction.memberPermissions?.has('ManageGuild') ||
 					interaction.memberPermissions?.has('ManageChannels') ||
@@ -339,6 +341,7 @@ const commands: Commands = {
 				});
 			if (isDM == false) {
 				const hasPermissions =
+				interaction.guild?.ownerId == interaction.user.id||
 					interaction.memberPermissions?.has('Administrator') ||
 					interaction.memberPermissions?.has('ManageGuild') ||
 					interaction.memberPermissions?.has('ManageChannels') ||
@@ -483,6 +486,7 @@ const commands: Commands = {
 				return await interaction.respond([]);
 			else if (isDM == false) {
 				const hasPermissions =
+				interaction.guild?.ownerId == interaction.user.id||
 					interaction.memberPermissions?.has('Administrator') ||
 					interaction.memberPermissions?.has('ManageGuild') ||
 					interaction.memberPermissions?.has('ManageChannels') ||
