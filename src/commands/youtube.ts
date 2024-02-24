@@ -4,7 +4,7 @@ import { ChannelType, SlashCommandBuilder } from 'discord.js';
 
 import type { Commands } from '../types/commands';
 
-import { getChannel_Main, searchChannel } from '../innertube/functions';
+import { searchChannel } from '../innertube/functions';
 
 import config from '../../config';
 import { QuickMakeEmbed } from '../utilities';
@@ -12,6 +12,7 @@ import { QuickMakeEmbed } from '../utilities';
 import { cacheSystem } from '..';
 import type { Channel } from '../types/channelType';
 import { subscribe, unsubscribe } from '../database';
+import { getChannels } from '../youtube-data-api-v3/functions';
 const commands: Commands = {
 	track: {
 		data: new SlashCommandBuilder()
@@ -150,7 +151,8 @@ const commands: Commands = {
 			let channel: Channel =
 				checkCache != null ? await JSON.parse(checkCache) : null;
 			if (!checkCache) {
-				channel = await getChannel_Main(getID);
+				const getAPI = await getChannels(getID);
+				channel = getAPI[0]; // Fixes topic channels ^^
 			}
 			if (!channel.channel_id)
 				// we got this far so everything seems to be fine!
@@ -415,7 +417,8 @@ const commands: Commands = {
 			let channel: Channel =
 				checkCache != null ? await JSON.parse(checkCache) : null;
 			if (!checkCache) {
-				channel = await getChannel_Main(getID);
+				const getAPI = await getChannels(getID);
+				channel = getAPI[0]; // Fixes topic channels ^^
 			}
 
 			// after everything has been successfully been done we respond with the all done message!
