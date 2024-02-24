@@ -100,7 +100,7 @@ async function checkForUpdates() {
 						if (!getTextChannel?.discord_channel) continue;
 						if(!djs_client.channels.cache?.get(
 							getTextChannel.discord_channel,
-						)) await djs_client.channels.fetch(getTextChannel.discord_channel);
+						)) await djs_client.channels.fetch(getTextChannel.discord_channel).catch(logger.error);
 						const DiscordChannel = djs_client.channels.cache?.get(
 							getTextChannel.discord_channel,
 						);
@@ -205,7 +205,7 @@ async function checkForUpdates() {
 											name: `${channel?.handle??channel.title??channel.channel_id}`.slice(0,50),
 										}),
 								],
-							});
+							}).catch(logger.error);
 					}
 				}
 			}

@@ -325,21 +325,25 @@ async function searchChannel(query: string): Promise<Channel[]> {
 			method: 'POST',
 		},
 	).then((resp) => resp.json()); //FIXME: not use 'any' here :3
-	return data.contents.twoColumnSearchResultsRenderer.primaryContents.sectionListRenderer.contents[0].itemSectionRenderer.contents.map(
-		(channel: any /*eslint-disable-line*/) => {
-			return {
-				avatar: channel?.channelRenderer?.thumbnail?.thumbnails?.[0]?.url,
-				title: channel?.channelRenderer?.longBylineText?.runs?.[0]?.text,
-				handle: channel?.channelRenderer?.subscriberCountText?.simpleText,
-				channel_id: channel.channelRenderer.channelId,
-				subscribers: formatLargeNumber(
-					channel?.channelRenderer?.videoCountText?.simpleText, // what
-				),
-				views: undefined,
-				videos: undefined,
-			};
-		},
-	);
+	const channelsResponse: Channel[] = [];
+	for (const content of data?.contents?.twoColumnSearchResultsRenderer
+		?.primaryContents?.sectionListRenderer?.contents ?? []) {
+		for (const channel of content?.itemSectionRenderer?.contents ?? []) { // this should in theory fix the search error logs. I hope.
+			if (channel?.channelRenderer?.channelId)
+				channelsResponse.push({
+					avatar: channel?.channelRenderer?.thumbnail?.thumbnails?.[0]?.url,
+					title: channel?.channelRenderer?.longBylineText?.runs?.[0]?.text,
+					handle: channel?.channelRenderer?.subscriberCountText?.simpleText,
+					channel_id: channel.channelRenderer.channelId,
+					subscribers: formatLargeNumber(
+						channel?.channelRenderer?.videoCountText?.simpleText, // what
+					),
+					views: undefined,
+					videos: undefined,
+				});
+		}
+	}
+	return channelsResponse;
 }
 
 export { getChannel_About, getChannel_Main, searchChannel };
