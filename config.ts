@@ -8,6 +8,10 @@ export default {
 	},
 	bot: {
 		privateMessages: true, // allow tracking to be done in private messages
+		graph: true, // allow users to generate graphs of channels
+		disableLimits: false,
+		textchannelmax: 50,
+		guildmax: 100,
 	},
 	youtube: {
 		api: 'data-api-v3', // data-api-v3 or innertube

@@ -11,7 +11,7 @@ import { QuickMakeEmbed } from '../utilities';
 
 import { cacheSystem } from '..';
 import type { Channel } from '../types/channelType';
-import { subscribe, unsubscribe } from '../database';
+import { subscribe, subscribes, unsubscribe } from '../database';
 import { getChannels } from '../youtube-data-api-v3/functions';
 const commands: Commands = {
 	track: {
@@ -187,6 +187,57 @@ const commands: Commands = {
 						),
 					],
 				});
+			if (config.bot?.disableLimits != true) {
+				const checkForLimitsGuild =
+					interaction.guild?.id != null
+						? subscribes.filter((a) => a?.guild_id == interaction.guild?.id)
+								.length
+						: null;
+				const checkForLimitsChannel =
+					interaction.channel?.id != null
+						? subscribes.filter(
+								(a) => a?.discord_channel == interaction.channel?.id,
+						  ).length
+						: null;
+				if (
+					checkForLimitsGuild != null &&
+					checkForLimitsGuild >= (config.bot?.guildmax ?? 100)
+				)
+					return await interaction.editReply({
+						embeds: [
+							QuickMakeEmbed(
+								{
+									color: 'Red',
+									title:
+										'This guild has hit the ' +
+										(config.bot?.guildmax ?? 100) +
+										' channel max tracking limit', // FIXME: english is hard
+									description: `If you are the owner of the bot, increase 'guildmax' value in the \`config.ts\` file.\n\n**Aren't the owner?** Host your own version of the bot!\nJust grab the code from our [Github](<https://github.com/NiaAxern/discord-youtube-subscriber-count>), set it up and run it!`,
+								},
+								interaction,
+							),
+						],
+					});
+				if (
+					checkForLimitsChannel != null &&
+					checkForLimitsChannel >= (config.bot?.textchannelmax ?? 50)
+				)
+					return await interaction.editReply({
+						embeds: [
+							QuickMakeEmbed(
+								{
+									color: 'Red',
+									title:
+										'This text channel has hit the ' +
+										(config.bot?.textchannelmax ?? 50) +
+										' channel max tracking limit', // FIXME: english isnt my city
+									description: `If you are the owner of the bot, increase 'textchannelmax' value in the \`config.ts\` file.\n\n**Aren't the owner?** Host your own version of the bot!\nJust grab the code from our [Github](<https://github.com/NiaAxern/discord-youtube-subscriber-count>), set it up and run it!`,
+								},
+								interaction,
+							),
+						],
+					});
+			}
 			const subscribeToChannel = subscribe(
 				getID,
 				interaction.guild?.id != null,
@@ -246,7 +297,7 @@ const commands: Commands = {
 					interaction.memberPermissions?.has('ManageChannels') ||
 					false;
 				if (hasPermissions == false) return await interaction.respond([]);
-				const botPermissions =
+				/*const botPermissions =
 					(interaction.channel
 						?.permissionsFor(interaction.client.user)
 						?.has('SendMessages') &&
@@ -264,7 +315,7 @@ const commands: Commands = {
 							?.has('SendMessagesInThreads')) ||
 					false;
 
-				if (botPermissions == false) return await interaction.respond([]);
+				if (botPermissions == false) return await interaction.respond([]);*/
 			}
 			const userQuery = interaction.options?.getString('query');
 			if (userQuery == '' || !userQuery) return await interaction.respond([]);
@@ -491,7 +542,7 @@ const commands: Commands = {
 					interaction.memberPermissions?.has('ManageChannels') ||
 					false;
 				if (hasPermissions == false) return await interaction.respond([]);
-				const botPermissions =
+				/*const botPermissions =
 					(interaction.channel
 						?.permissionsFor(interaction.client.user)
 						?.has('SendMessages') &&
@@ -509,7 +560,7 @@ const commands: Commands = {
 							?.has('SendMessagesInThreads')) ||
 					false;
 
-				if (botPermissions == false) return await interaction.respond([]);
+				if (botPermissions == false) return await interaction.respond([]);*/
 			}
 			const userQuery = interaction.options?.getString('query');
 			if (userQuery == '' || !userQuery) return await interaction.respond([]);
