@@ -28,7 +28,3 @@ setInterval(() => {
 		status: 'online',
 	});
 }, 60000);
-process.on('unhandledRejection', (err: any) /* eslint-disable-line */ => {
-	logger.fatal('Uncaught Promise Error:' + err);
-	process.exit(1);
-});

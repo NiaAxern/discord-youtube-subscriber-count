@@ -137,11 +137,20 @@ async function refreshFile() {
 		updatePossible = false;
 		const data = await compress(
 			JSON.stringify({ youtube_channels, subscribes }),
-		);
-		await Bun.write('data/meta_temporary.json', data);
-		if (process.argv.findIndex((val) => val == '--dev') != -1)
-			await Bun.write('data/meta_developer.json', JSON.stringify({ youtube_channels, subscribes }, null, 2)); // uncompressed. for dev mode!
-		await fs.rename('data/meta_temporary.json', 'data/meta.json'); // so that it doesnt corrupt when power goes out or the app crashes
+		).catch(logger.error);
+		if (!data) {
+			logger.warn("Compressed data is null somehow!")
+		} else {
+			await Bun.write('data/meta_temporary.json', data).catch(logger.error);
+			if (process.argv.findIndex((val) => val == '--dev') != -1)
+				await Bun.write(
+					'data/meta_developer.json',
+					JSON.stringify({ youtube_channels, subscribes }, null, 2),
+				).catch(logger.error); // uncompressed. for dev mode!
+			await fs
+				.rename('data/meta_temporary.json', 'data/meta.json')
+				.catch(logger.error); // so that it doesnt corrupt when power goes out or the app crashes
+		}
 	} catch (e) {
 		logger.error(e);
 	} finally {

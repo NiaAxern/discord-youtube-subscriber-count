@@ -5,6 +5,7 @@ import { SlashCommandBuilder } from 'discord.js';
 import type { Commands } from '../types/commands';
 import { heapStats } from 'bun:jsc';
 import { dirSize } from '../utilities';
+import logger from '../logging';
 const commands: Commands = {
 	ping: {
 		data: new SlashCommandBuilder()
@@ -14,7 +15,7 @@ const commands: Commands = {
 			await interaction.reply({
 				ephemeral: true,
 				content: `Ping: ${interaction.client.ws.ping}ms`,
-			});
+			}).catch(logger.error);
 		},
 	},
 	uptime: {
@@ -27,7 +28,7 @@ const commands: Commands = {
 				content: `Uptime: ${(performance.now() / (86400 * 1000)).toFixed(
 					2,
 				)} days`,
-			});
+			}).catch(logger.error);
 		},
 	},
 	usage: {
@@ -47,7 +48,7 @@ const commands: Commands = {
 					`Data usage: ${(dataUsage / 1024 / 1024).toFixed(2)} MB`,
 					`Logs usage: ${(logUsage / 1024 / 1024).toFixed(2)} MB`,
 				].join('\n'),
-			});
+			}).catch(logger.error);
 		},
 	},
 };
