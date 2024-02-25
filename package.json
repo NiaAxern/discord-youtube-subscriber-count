@@ -1,7 +1,7 @@
 {
   "name": "self-host-subscriber-bot",
   "module": "index.ts",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "type": "module",
   "scripts": {
     "dev": "echo Checking linting... &&bunx eslint . && echo All look good. Running the script... && bun run src/index.ts --dev",

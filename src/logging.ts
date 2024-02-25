@@ -13,7 +13,7 @@ const logger = pino({
 				options: {
 					colorize: true,
 				},
-			},
+			}/*,
 			{
 				level: 'trace',
 				target: 'pino-roll',
@@ -23,7 +23,7 @@ const logger = pino({
 					frequency: 'daily',
 					mkdir: true,
 				},
-			},
+			},*/
 		],
 	},
 	timestamp: pino.stdTimeFunctions.isoTime,
