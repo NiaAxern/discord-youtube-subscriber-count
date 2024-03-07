@@ -24,6 +24,7 @@
     "pino-roll": "^1.0.0-rc.1",
     "snappy": "^7.2.2",
     "typescript": "^5.0.0",
-    "typescript-eslint": "^7.0.1"
+    "typescript-eslint": "^7.0.1",
+    "zod": "^3.22.4"
   }
 }
