@@ -23,7 +23,7 @@ logger.debug("Validating environment variables...");
 const parsed = envVariables.safeParse(process.env);
 if (parsed.success === false) {
   console.error(
-    "Invalid environment variables:",
+    "❌ Invalid environment variables:",
     parsed.error.flatten().fieldErrors,
   );
   throw new SyntaxError("Invalid environment variables");

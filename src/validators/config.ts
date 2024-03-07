@@ -27,7 +27,10 @@ logger.debug("Validating configuration...");
 
 const parsed = configSchema.safeParse(config);
 if (parsed.success === false) {
-  logger.error("❌ Invalid configuration:", parsed.error.flatten().fieldErrors);
+  console.error(
+    "❌ Invalid configuration:",
+    parsed.error.flatten().fieldErrors,
+  );
   throw new SyntaxError("Invalid configuration");
 }
 
