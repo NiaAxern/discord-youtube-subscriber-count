@@ -1,5 +1,7 @@
 /** @format */
 
+import type { Config } from "./src/validators/config";
+
 export default {
 	http: {
 		// TODO: http support
@@ -10,12 +12,12 @@ export default {
 		privateMessages: true, // allow tracking to be done in private messages
 		graph: true, // allow users to generate graphs of channels
 		disableLimits: false,
-		textchannelmax: 50,
-		guildmax: 100,
+		textChannelMax: 50,
+		guildMax: 100,
 	},
 	youtube: {
 		api: 'data-api-v3', // data-api-v3 or innertube
 		delay: 1000, // Delay between trackings.
 		//Increase this to use less quota (if using data-api-v3)
 	},
-};
+} satisfies Config;

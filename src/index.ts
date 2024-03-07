@@ -1,5 +1,7 @@
 /** @format */
 
+import "./validators/env"
+import "./validators/config"
 import { getHashOfFolder } from './utilities';
 import fs from 'fs/promises';
 import logger from './logging';
