@@ -735,7 +735,7 @@ const commands: Commands = {
 					.filter((a) => a?.channel_id == channel.channel_id)
 					.filter(
 						(_, _idx, _arr) =>
-							_arr.findIndex((_rec) => _rec.guild_id == _.guild_id) == _idx,
+							_arr.findIndex((_rec) => _rec.guild_id == _.guild_id && _.channel_id == _rec.channel_id) == _idx,
 					).length;
 				const checkForLimitsChannel = subscribes
 					.filter((a) => a?.channel_id == channel.channel_id)
