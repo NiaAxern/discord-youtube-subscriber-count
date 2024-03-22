@@ -18,7 +18,7 @@ declare global {
 
 import logger from "../logging";
 
-logger.debug("Validating environment variables...");
+console.log("Validating environment variables...");
 
 const parsed = envVariables.safeParse(process.env);
 if (parsed.success === false) {
@@ -29,4 +29,4 @@ if (parsed.success === false) {
   throw new SyntaxError("Invalid environment variables");
 }
 
-logger.debug("Environment variables seem to be correct...");
+console.log("Environment variables seem to be correct...");

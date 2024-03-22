@@ -52,7 +52,7 @@ const commands: Commands = {
 		},
 		execute: async (interaction) => {
 			try {
-				await interaction.deferReply({ ephemeral: true }).catch(logger.error);
+				await interaction.deferReply({ ephemeral: true }).catch(console.error);
 				const isDM = interaction.inGuild() == false;
 				const getChannel =
 					interaction.options?.get('text_channel')?.channel?.id ??
@@ -74,7 +74,7 @@ const commands: Commands = {
 								),
 							],
 						})
-						.catch(logger.error);
+						.catch(console.error);
 				if (isDM == true && (config.bot.privateMessages as boolean) == false)
 					return await interaction
 						.editReply({
@@ -90,7 +90,7 @@ const commands: Commands = {
 								),
 							],
 						})
-						.catch(logger.error);
+						.catch(console.error);
 				else if (isDM == false) {
 					const hasPermissions =
 						interaction.memberPermissions?.has('Administrator') ||
@@ -184,14 +184,14 @@ const commands: Commands = {
 								),
 							],
 						})
-						.catch(logger.error);
+						.catch(console.error);
 
 				// after everything has been successfully been done we respond with the all done message!
 				let getText = interaction.client.channels.cache.get(getChannel);
 				if (!getText) {
 					await interaction.client.channels
 						.fetch(getChannel)
-						.catch(logger.error);
+						.catch(console.error);
 					getText = interaction.client.channels.cache.get(getChannel);
 				}
 				if (!getText)
@@ -208,7 +208,7 @@ const commands: Commands = {
 								),
 							],
 						})
-						.catch(logger.error);
+						.catch(console.error);
 				if ((config.bot?.disableLimits as boolean) != true) {
 					const checkForLimitsGuild =
 						interaction.guild?.id != null
@@ -242,7 +242,7 @@ const commands: Commands = {
 									),
 								],
 							})
-							.catch(logger.error);
+							.catch(console.error);
 					if (
 						checkForLimitsChannel != null &&
 						checkForLimitsChannel >= (config.bot?.textChannelMax ?? 50)
@@ -263,7 +263,7 @@ const commands: Commands = {
 									),
 								],
 							})
-							.catch(logger.error);
+							.catch(console.error);
 				}
 				const subscribeToChannel = subscribe(
 					getID,
@@ -285,7 +285,7 @@ const commands: Commands = {
 								),
 							],
 						})
-						.catch(logger.error);
+						.catch(console.error);
 				const opt = {
 					embeds: [
 						QuickMakeEmbed(
@@ -311,15 +311,15 @@ const commands: Commands = {
 					],
 				};
 				if (getText.isTextBased() == true && getText.isDMBased() == false) {
-					await getText.send(opt).catch(logger.error);
+					await getText.send(opt).catch(console.error);
 				}
-				return await interaction.editReply(opt).catch(logger.error);
+				return await interaction.editReply(opt).catch(console.error);
 			} catch (e) {
 				await interaction.followUp({
 					ephemeral: true,
 					content: 'An error happened!',
 				});
-				logger.error(e);
+				console.error(e);
 			}
 		},
 		autoComplete: async (interaction) => {
@@ -379,7 +379,7 @@ const commands: Commands = {
 					}),
 				);
 			} catch (e) {
-				logger.error(e);
+				console.error(e);
 			}
 		},
 	},
@@ -408,7 +408,7 @@ const commands: Commands = {
 				'Untrack an already tracked channel from here or from a different text-channel.',
 		},
 		execute: async (interaction) => {
-			await interaction.deferReply({ ephemeral: true }).catch(logger.error);
+			await interaction.deferReply({ ephemeral: true }).catch(console.error);
 			try {
 				const isDM = interaction.inGuild() == false;
 				const getChannel =
@@ -431,7 +431,7 @@ const commands: Commands = {
 								),
 							],
 						})
-						.catch(logger.error);
+						.catch(console.error);
 				if (isDM == false) {
 					const hasPermissions =
 						interaction.memberPermissions?.has('Administrator') ||
@@ -455,7 +455,7 @@ const commands: Commands = {
 									),
 								],
 							})
-							.catch(logger.error);
+							.catch(console.error);
 					const botPermissions =
 						(interaction.channel
 							?.permissionsFor(interaction.client.user)
@@ -503,7 +503,7 @@ const commands: Commands = {
 									),
 								],
 							})
-							.catch(logger.error);
+							.catch(console.error);
 				}
 				const checkCache = await cacheSystem.get(getID).catch(() => {
 					return null;
@@ -520,7 +520,7 @@ const commands: Commands = {
 				if (!getText) {
 					await interaction.client.channels
 						.fetch(getChannel)
-						.catch(logger.error);
+						.catch(console.error);
 					getText = interaction.client.channels.cache.get(getChannel);
 				}
 				if (!getText)
@@ -537,7 +537,7 @@ const commands: Commands = {
 								),
 							],
 						})
-						.catch(logger.error);
+						.catch(console.error);
 				const subscribeToChannel = unsubscribe(getID, getChannel);
 				if (subscribeToChannel == false)
 					return await interaction
@@ -553,7 +553,7 @@ const commands: Commands = {
 								),
 							],
 						})
-						.catch(logger.error);
+						.catch(console.error);
 				const opt = {
 					embeds: [
 						QuickMakeEmbed(
@@ -579,22 +579,22 @@ const commands: Commands = {
 					],
 				};
 				if (getText.isTextBased() == true && getText.isDMBased() == false) {
-					await getText.send(opt).catch(logger.error);
+					await getText.send(opt).catch(console.error);
 				}
-				return await interaction.editReply(opt).catch(logger.error);
+				return await interaction.editReply(opt).catch(console.error);
 			} catch (e) {
 				await interaction.followUp({
 					ephemeral: true,
 					content: 'An error happened!',
 				});
-				logger.error(e);
+				console.error(e);
 			}
 		},
 		autoComplete: async (interaction) => {
 			try {
 				const isDM = interaction.inGuild() == false;
 				if (isDM == true && (config.bot.privateMessages as boolean) == false)
-					return await interaction.respond([]).catch(logger.error);
+					return await interaction.respond([]).catch(console.error);
 				else if (isDM == false) {
 					const hasPermissions =
 						interaction.memberPermissions?.has('Administrator') ||
@@ -602,7 +602,7 @@ const commands: Commands = {
 						interaction.memberPermissions?.has('ManageChannels') ||
 						false;
 					if (hasPermissions == false)
-						return await interaction.respond([]).catch(logger.error);
+						return await interaction.respond([]).catch(console.error);
 					/*const botPermissions =
 					(interaction.channel
 						?.permissionsFor(interaction.client.user)
@@ -625,7 +625,7 @@ const commands: Commands = {
 				}
 				const userQuery = interaction.options?.getString('query');
 				if (userQuery == '' || !userQuery)
-					return await interaction.respond([]).catch(logger.error);
+					return await interaction.respond([]).catch(console.error);
 				if (userQuery.length == 24 && userQuery.startsWith('UC'))
 					return await interaction
 						.respond([
@@ -634,7 +634,7 @@ const commands: Commands = {
 								value: userQuery,
 							},
 						])
-						.catch(logger.error);
+						.catch(console.error);
 				const queryYouTube = await searchChannel(userQuery);
 				return await interaction
 					.respond(
@@ -651,9 +651,9 @@ const commands: Commands = {
 							};
 						}),
 					)
-					.catch(logger.error);
+					.catch(console.error);
 			} catch (e) {
-				logger.error(e);
+				console.error(e);
 			}
 		},
 	},
@@ -683,7 +683,7 @@ const commands: Commands = {
 		},
 		execute: async (interaction) => {
 			try {
-				await interaction.deferReply({ ephemeral: false }).catch(logger.error);
+				await interaction.deferReply({ ephemeral: false }).catch(console.error);
 				const getID: string =
 					interaction.options?.get('query')?.value?.toString() ??
 					"(You didn't enter any channelID's";
@@ -701,7 +701,7 @@ const commands: Commands = {
 								),
 							],
 						})
-						.catch(logger.error);
+						.catch(console.error);
 				const checkCache = await cacheSystem.get(getID).catch(() => {
 					return null;
 				});
@@ -726,7 +726,7 @@ const commands: Commands = {
 								),
 							],
 						})
-						.catch(logger.error);
+						.catch(console.error);
 
 				const getLatestAPIUpdate = youtube_channels.find(
 					(record_channel) => record_channel.channel_id == channel.channel_id,
@@ -792,13 +792,13 @@ const commands: Commands = {
 							.setURL('https://www.youtube.com/channel/' + getID),
 					],
 				};
-				return await interaction.editReply(opt).catch(logger.error);
+				return await interaction.editReply(opt).catch(console.error);
 			} catch (e) {
 				await interaction.followUp({
 					ephemeral: true,
 					content: 'An error happened!',
 				});
-				logger.error(e);
+				console.error(e);
 			}
 		},
 		autoComplete: async (interaction) => {
@@ -828,7 +828,7 @@ const commands: Commands = {
 					}),
 				);
 			} catch (e) {
-				logger.error(e);
+				console.error(e);
 			}
 		},
 	},

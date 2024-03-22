@@ -9,10 +9,10 @@ const getDir = (await fs.readdir('src/commands')).map((value) => {
 });
 for await (const filepath of getDir) {
 	const Commands = (await import(filepath)).default;
-	logger.debug("loading commands from "+filepath);
+	console.log("loading commands from "+filepath);
 	for (const key in Commands) {
 		const command = Commands[key];
-		logger.debug("loading "+key);
+		console.log("loading "+key);
 		commands.set(key, command);
 	}
 }

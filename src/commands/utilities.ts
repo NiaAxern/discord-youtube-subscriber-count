@@ -19,7 +19,7 @@ const commands: Commands = {
 					ephemeral: false,
 					content: `Ping: ${interaction.client.ws.ping}ms`,
 				})
-				.catch(logger.error);
+				.catch(console.error);
 		},
 	},
 	help: {
@@ -31,7 +31,7 @@ const commands: Commands = {
 			contexts: [0, 1, 2],
 		},
 		execute: async (interaction) => {
-			await client.application?.commands?.fetch().catch(logger.error);
+			await client.application?.commands?.fetch().catch(console.error);
 			const chat_commands = client.application?.commands.cache.map((a) => {
 				return `</${a.name}:${a.id}>: ${a.description}`;
 			});
@@ -40,7 +40,7 @@ const commands: Commands = {
 					ephemeral: true,
 					content: `Commands:\n${chat_commands?.join('\n')}`,
 				})
-				.catch(logger.error);
+				.catch(console.error);
 		},
 	},
 	termsofservice: {
@@ -57,8 +57,8 @@ const commands: Commands = {
 					ephemeral: true,
 					content: `[Terms of Service](https://nia-statistics.com/discord-bot-tos.html)`,
 				})
-				.catch(logger.error);
-				
+				.catch(console.error);
+
 		},
 	},
 	privacypolicy: {
@@ -75,7 +75,7 @@ const commands: Commands = {
 					ephemeral: true,
 					content: `[Privacy Policy](https://nia-statistics.com/discord-bot-privacy-policy.html)`,
 				})
-				.catch(logger.error);
+				.catch(console.error);
 		},
 	},
 	sourcecode: {
@@ -92,7 +92,7 @@ const commands: Commands = {
 					ephemeral: true,
 					content: `[Github repository](https://github.com/NiaAxern/discord-youtube-subscriber-count)`,
 				})
-				.catch(logger.error);
+				.catch(console.error);
 		},
 	},
 	uptime: {
@@ -111,7 +111,7 @@ const commands: Commands = {
 						2,
 					)} days`,
 				})
-				.catch(logger.error);
+				.catch(console.error);
 		},
 	},
 	usage: {
@@ -147,7 +147,7 @@ const commands: Commands = {
 						`Logs usage: ${(logUsage / 1024 / 1024).toFixed(2)} MB`,
 					].join('\n'),
 				})
-				.catch(logger.error);
+				.catch(console.error);
 		},
 	},
 };

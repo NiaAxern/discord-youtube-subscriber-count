@@ -81,10 +81,10 @@ async function checkForUpdates() {
 							if (dirExists == false) {
 								const checkIfExists = await fs.readdir('data');
 								if (checkIfExists.findIndex((a) => a == 'history') == -1) {
-									logger.debug('making history dir to data dir');
+									console.log('making history dir to data dir');
 									await fs.mkdir('data/history');
 								} else {
-									logger.debug(
+									console.log(
 										'history dir in data dir already exists. doing nothing now...',
 									);
 								}
@@ -95,7 +95,7 @@ async function checkForUpdates() {
 									'data/history/' + getUser.channel_id + '.csv',
 									`\n${getUser.currentUpdate.hit},${channel.subscribers},${channel.views},${channel.videos}`,
 								)
-								.catch(logger.error);
+								.catch(console.error);
 							// send to the subscribers
 							for (const subscriberID of getUser.subscriberIDs) {
 								try {
@@ -111,7 +111,7 @@ async function checkForUpdates() {
 									)
 										await djs_client.channels
 											.fetch(getTextChannel.discord_channel)
-											.catch(logger.error);
+											.catch(console.error);
 									const DiscordChannel = djs_client.channels.cache?.get(
 										getTextChannel.discord_channel,
 									);
@@ -228,22 +228,22 @@ async function checkForUpdates() {
 														}`.slice(0, 50),
 													}),
 											],
-										}).catch(logger.error);
+										}).catch(console.error);
 								} catch (e) {
-									logger.error(e);
+									console.error(e);
 								}
 							}
 						} catch (e) {
-							logger.error(e);
+							console.error(e);
 						}
 					}
 				}
 			} catch (e) {
-				logger.error(e);
+				console.error(e);
 			}
 		}
 	} catch (e) {
-		logger.error(e);
+		console.error(e);
 	} finally {
 		await Bun.sleep(config.youtube.delay);
 		updatePossible = true; // allow saving again
@@ -257,7 +257,7 @@ setInterval(() => {
 		updatePossible == false
 	) {
 		updatePossible = true; // force save if it gets stuck
-		logger.debug(
+		console.log(
 			'tracking was locked for ' +
 				Math.floor(performance.now() - lastTrackTime) +
 				'ms, so we forced it to work again. this should rarely happen though...',

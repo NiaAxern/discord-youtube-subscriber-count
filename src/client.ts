@@ -13,7 +13,7 @@ const client = new Client({
 	},
 });
 client.on('error', (error) => {
-	logger.error(error);
+	console.error(error);
 });
 
 client.login(process.env.DISCORD_TOKEN);

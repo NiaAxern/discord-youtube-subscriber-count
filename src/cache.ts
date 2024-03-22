@@ -8,7 +8,7 @@ class Cache {
 	private memCache = new Map();
 	constructor(cachepath?: string) {
 		if (cachepath) this.cachepath = cachepath;
-		logger.debug('initialized cache in ' + this.cachepath);
+		console.log('initialized cache in ' + this.cachepath);
 	}
 
 	// TODO: (someday) check if there is a package that does this (NO NOT REDIS.)
