@@ -135,12 +135,14 @@ async function refreshFile() {
 		const start = performance.now();
 		lastSaveTime = start;
 		updatePossible = false;
-		const data = await compress(
-			JSON.stringify({ youtube_channels, subscribes }),
-		).catch(logger.error);
+		const jsonifiedData = JSON.stringify({ youtube_channels, subscribes });
+		const data = await compress(jsonifiedData).catch(logger.error);
 		if (!data) {
-			logger.warn("Compressed data is null somehow!")
+			logger.warn('Compressed data is null somehow!');
 		} else {
+			await Bun.write('data/meta_uncompressed.json', jsonifiedData).catch(
+				logger.error,
+			);
 			await Bun.write('data/meta_temporary.json', data).catch(logger.error);
 			if (process.argv.findIndex((val) => val == '--dev') != -1)
 				await Bun.write(
@@ -150,6 +152,7 @@ async function refreshFile() {
 			await fs
 				.rename('data/meta_temporary.json', 'data/meta.json')
 				.catch(logger.error); // so that it doesnt corrupt when power goes out or the app crashes
+			// UPDATE, it corrupted :)
 		}
 	} catch (e) {
 		logger.error(e);
@@ -157,7 +160,7 @@ async function refreshFile() {
 		updatePossible = true; // allow saving again
 	}
 }
-setInterval(refreshFile, 1000); // save it every second, it will not save if something is already saving it.
+setInterval(refreshFile, 10000); // save it every 10 seconds, it will not save if something is already saving it.
 setInterval(() => {
 	if (
 		performance.now() - lastSaveTime > 60_000 * 5 &&

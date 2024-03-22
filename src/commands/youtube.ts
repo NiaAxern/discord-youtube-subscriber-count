@@ -1,7 +1,5 @@
 /** @format */
 
-import { ChannelType, SlashCommandBuilder } from 'discord.js';
-
 import type { Commands } from '../types/commands';
 
 import { searchChannel } from '../innertube/functions';
@@ -11,35 +9,47 @@ import { QuickMakeEmbed } from '../utilities';
 
 import { cacheSystem } from '..';
 import type { Channel } from '../types/channelType';
-import { subscribe, subscribes, unsubscribe } from '../database';
+import {
+	subscribe,
+	subscribes,
+	unsubscribe,
+	youtube_channels,
+} from '../database';
 import { getChannels } from '../youtube-data-api-v3/functions';
 import logger from '../logging';
 const commands: Commands = {
 	track: {
-		data: new SlashCommandBuilder()
-			.setName('track')
-			// typescript starts crying when the addOptions are on the bottom
-			// so to fix it i made description be the bottom and it fixed it.
-			// What. FIXME: this ^
-			.addStringOption((option) =>
-				option
-					.setName('query')
-					.setDescription('Query to search with.')
-					.setRequired(true)
-					.setAutocomplete(true),
-			)
-			.addChannelOption((option) =>
-				option
-					.setName('text_channel')
-					.setDescription('The channel to send the notifications to.')
-					.setRequired(false)
-					.addChannelTypes(ChannelType.GuildAnnouncement)
-					.addChannelTypes(ChannelType.GuildText)
-					.addChannelTypes(ChannelType.PublicThread),
-			)
-			.setDescription(
+		data: {
+			options: [
+				{
+					autocomplete: true,
+					type: 3,
+					name: 'query',
+					description: 'Query to search with.',
+					required: true,
+				},
+				{
+					channel_types: [5, 0, 11],
+					name: 'text_channel',
+					description: 'The channel to send the notifications to.',
+					required: false,
+					type: 7,
+				},
+			],
+			// cheatsheet:
+			// integration_types = basically allows the command to be used in servers / users, 0 = servers, 1 = everywhere else (use both if want everywhere)
+			// contexts =
+			/*NAME	TYPE	DESCRIPTION
+			  GUILD	0	Interaction can be used within servers
+			  BOT_DM	1	Interaction can be used within DMs with the app's bot user
+			  PRIVATE_CHANNEL	2
+			*/
+			integration_types: [0],
+			contexts: [0, 1],
+			name: 'track',
+			description:
 				'Track a channel and their subscribers here or a different channel.',
-			),
+		},
 		execute: async (interaction) => {
 			try {
 				await interaction.deferReply({ ephemeral: true }).catch(logger.error);
@@ -65,7 +75,7 @@ const commands: Commands = {
 							],
 						})
 						.catch(logger.error);
-				if (isDM == true && config.bot.privateMessages == false)
+				if (isDM == true && (config.bot.privateMessages as boolean) == false)
 					return await interaction
 						.editReply({
 							embeds: [
@@ -199,7 +209,7 @@ const commands: Commands = {
 							],
 						})
 						.catch(logger.error);
-				if (config.bot?.disableLimits != true) {
+				if ((config.bot?.disableLimits as boolean) != true) {
 					const checkForLimitsGuild =
 						interaction.guild?.id != null
 							? subscribes.filter((a) => a?.guild_id == interaction.guild?.id)
@@ -214,7 +224,7 @@ const commands: Commands = {
 					//FIXME: PRETTIER BREAKS THIS! thats why it has disable line rule!
 					if (
 						checkForLimitsGuild != null &&
-						checkForLimitsGuild >= (config.bot?.guildmax ?? 100)
+						checkForLimitsGuild >= (config.bot?.guildMax ?? 100)
 					)
 						return await interaction
 							.editReply({
@@ -224,7 +234,7 @@ const commands: Commands = {
 											color: 'Red',
 											title:
 												'This guild has hit the ' +
-												(config.bot?.guildmax ?? 100) +
+												(config.bot?.guildMax ?? 100) +
 												' channel max tracking limit', // FIXME: english is hard
 											description: `If you are the owner of the bot, increase 'guildmax' value in the \`config.ts\` file.\n\n**Aren't the owner?** Host your own version of the bot!\nJust grab the code from our [Github](<https://github.com/NiaAxern/discord-youtube-subscriber-count>), set it up and run it!`,
 										},
@@ -235,7 +245,7 @@ const commands: Commands = {
 							.catch(logger.error);
 					if (
 						checkForLimitsChannel != null &&
-						checkForLimitsChannel >= (config.bot?.textchannelmax ?? 50)
+						checkForLimitsChannel >= (config.bot?.textChannelMax ?? 50)
 					)
 						return await interaction
 							.editReply({
@@ -245,7 +255,7 @@ const commands: Commands = {
 											color: 'Red',
 											title:
 												'This text channel has hit the ' +
-												(config.bot?.textchannelmax ?? 50) +
+												(config.bot?.textChannelMax ?? 50) +
 												' channel max tracking limit', // FIXME: english isnt my city
 											description: `If you are the owner of the bot, increase 'textchannelmax' value in the \`config.ts\` file.\n\n**Aren't the owner?** Host your own version of the bot!\nJust grab the code from our [Github](<https://github.com/NiaAxern/discord-youtube-subscriber-count>), set it up and run it!`,
 										},
@@ -315,7 +325,7 @@ const commands: Commands = {
 		autoComplete: async (interaction) => {
 			try {
 				const isDM = interaction.inGuild() == false;
-				if (isDM == true && config.bot.privateMessages == false)
+				if (isDM == true && (config.bot.privateMessages as boolean) == false)
 					return await interaction.respond([]);
 				else if (isDM == false) {
 					const hasPermissions =
@@ -374,30 +384,29 @@ const commands: Commands = {
 		},
 	},
 	untrack: {
-		data: new SlashCommandBuilder()
-			.setName('untrack')
-			// typescript starts crying when the addOptions are on the bottom
-			// so to fix it i made description be the bottom and it fixed it.
-			// What. FIXME: this ^
-			.addStringOption((option) =>
-				option
-					.setName('query')
-					.setDescription('Query to search with.')
-					.setRequired(true)
-					.setAutocomplete(true),
-			)
-			.addChannelOption((option) =>
-				option
-					.setName('text_channel')
-					.setDescription('The channel to untrack the channel from.')
-					.setRequired(false)
-					.addChannelTypes(ChannelType.GuildAnnouncement)
-					.addChannelTypes(ChannelType.GuildText)
-					.addChannelTypes(ChannelType.PublicThread),
-			)
-			.setDescription(
+		data: {
+			options: [
+				{
+					autocomplete: true,
+					type: 3,
+					name: 'query',
+					description: 'Query to search with.',
+					required: true,
+				},
+				{
+					channel_types: [5, 0, 11],
+					name: 'text_channel',
+					description: 'The channel to untrack the channel from.',
+					required: false,
+					type: 7,
+				},
+			],
+			integration_types: [0],
+			contexts: [0, 1],
+			name: 'untrack',
+			description:
 				'Untrack an already tracked channel from here or from a different text-channel.',
-			),
+		},
 		execute: async (interaction) => {
 			await interaction.deferReply({ ephemeral: true }).catch(logger.error);
 			try {
@@ -584,7 +593,7 @@ const commands: Commands = {
 		autoComplete: async (interaction) => {
 			try {
 				const isDM = interaction.inGuild() == false;
-				if (isDM == true && config.bot.privateMessages == false)
+				if (isDM == true && (config.bot.privateMessages as boolean) == false)
 					return await interaction.respond([]).catch(logger.error);
 				else if (isDM == false) {
 					const hasPermissions =
@@ -643,6 +652,181 @@ const commands: Commands = {
 						}),
 					)
 					.catch(logger.error);
+			} catch (e) {
+				logger.error(e);
+			}
+		},
+	},
+	channel: {
+		data: {
+			options: [
+				{
+					autocomplete: true,
+					type: 3,
+					name: 'query',
+					description: 'Query to search with.',
+					required: true,
+				},
+			],
+			// cheatsheet:
+			// integration_types = basically allows the command to be used in servers / users, 0 = servers, 1 = everywhere else (use both if want everywhere)
+			// contexts =
+			/*NAME	TYPE	DESCRIPTION
+			  GUILD	0	Interaction can be used within servers
+			  BOT_DM	1	Interaction can be used within DMs with the app's bot user
+			  PRIVATE_CHANNEL	2
+			*/
+			integration_types: [0, 1],
+			contexts: [0, 1, 2],
+			name: 'channel',
+			description: "Show a certain channel's statistics!",
+		},
+		execute: async (interaction) => {
+			try {
+				await interaction.deferReply({ ephemeral: false }).catch(logger.error);
+				const getID: string =
+					interaction.options?.get('query')?.value?.toString() ??
+					"(You didn't enter any channelID's";
+				if (getID.length != 24 || getID.startsWith('UC') == false)
+					return await interaction
+						.editReply({
+							embeds: [
+								QuickMakeEmbed(
+									{
+										color: 'Red',
+										title: 'Incorrect YouTube channel id!',
+										description: `The channel id \`${getID}\` is not a valid channel id.`,
+									},
+									interaction,
+								),
+							],
+						})
+						.catch(logger.error);
+				const checkCache = await cacheSystem.get(getID).catch(() => {
+					return null;
+				});
+				let channel: Channel =
+					checkCache != null ? await JSON.parse(checkCache) : null;
+				if (!checkCache) {
+					const getAPI = await getChannels(getID);
+					channel = getAPI[0]; // Fixes topic channels ^^
+				}
+				if (!channel.channel_id)
+					// we got this far so everything seems to be fine!
+					return await interaction
+						.editReply({
+							embeds: [
+								QuickMakeEmbed(
+									{
+										color: 'Red',
+										title: 'Channel was not found.',
+										description: `The channel \`${getID}\` was NOT found.`,
+									},
+									interaction,
+								),
+							],
+						})
+						.catch(logger.error);
+
+				const getLatestAPIUpdate = youtube_channels.find(
+					(record_channel) => record_channel.channel_id == channel.channel_id,
+				);
+				const checkForLimitsGuild = subscribes
+					.filter((a) => a?.channel_id == channel.channel_id)
+					.filter(
+						(_, _idx, _arr) =>
+							_arr.findIndex((_rec) => _rec.guild_id == _.guild_id) == _idx,
+					).length;
+				const checkForLimitsChannel = subscribes
+					.filter((a) => a?.channel_id == channel.channel_id)
+					.filter(
+						(_, _idx, _arr) =>
+							_arr.findIndex(
+								(_rec) => _rec.discord_channel == _.discord_channel,
+							) == _idx,
+					).length;
+				const lastSubscribers =
+					getLatestAPIUpdate?.lastUpdate?.subscribers?.toLocaleString(
+						'en-US',
+					) ?? 'No';
+				const currentSubscribers =
+					getLatestAPIUpdate?.currentUpdate?.subscribers?.toLocaleString(
+						'en-US',
+					) ?? 'No';
+				const lastSubrate =
+					Math.floor(
+						(getLatestAPIUpdate?.lastUpdate?.sub_rate ?? 0) * 86400 * 1000,
+					)?.toLocaleString('en-US') ?? 'No';
+				const currentSubrate =
+					Math.floor(
+						(getLatestAPIUpdate?.currentUpdate?.sub_rate ?? 0) * 86400 * 1000,
+					)?.toLocaleString('en-US') ?? 'No';
+				const apiText =
+					getLatestAPIUpdate != null
+						? `From ${lastSubscribers} (${lastSubrate} / day) to ${currentSubscribers} (${currentSubrate} / day)`
+						: '**Not tracked**';
+				const opt = {
+					embeds: [
+						QuickMakeEmbed(
+							{
+								color: 'Green',
+								title: `${channel.title}`,
+								description: `**${
+									channel.handle ?? channel.title
+								}** has **${channel.subscribers?.toLocaleString(
+									'en-US',
+								)} subscribers**, **${channel.views?.toLocaleString(
+									'en-US',
+								)} total video views** and **${channel.videos?.toLocaleString(
+									'en-US',
+								)} uploaded videos**!\n\nThey are being tracked in **${checkForLimitsGuild?.toLocaleString(
+									'en-US',
+								)} servers** and **${checkForLimitsChannel?.toLocaleString(
+									'en-US',
+								)} text channels**.
+								\n\nLast API update: ${apiText}`,
+							},
+							interaction,
+						)
+							.setThumbnail(channel.avatar ?? null)
+							.setURL('https://www.youtube.com/channel/' + getID),
+					],
+				};
+				return await interaction.editReply(opt).catch(logger.error);
+			} catch (e) {
+				await interaction.followUp({
+					ephemeral: true,
+					content: 'An error happened!',
+				});
+				logger.error(e);
+			}
+		},
+		autoComplete: async (interaction) => {
+			try {
+				const userQuery = interaction.options?.getString('query');
+				if (userQuery == '' || !userQuery) return await interaction.respond([]);
+				if (userQuery.length == 24 && userQuery.startsWith('UC'))
+					return await interaction.respond([
+						{
+							name: `${userQuery} (using channel id)`,
+							value: userQuery,
+						},
+					]);
+				const queryYouTube = await searchChannel(userQuery);
+				return await interaction.respond(
+					queryYouTube.map((channel) => {
+						return {
+							// What is shown to the user
+							name: `${channel.title} (${channel.handle}): ${
+								!channel?.subscribers
+									? 'No'
+									: channel.subscribers?.toLocaleString('en-US')
+							} subscriber${channel.subscribers == 1 ? '' : 's'}`,
+							// What is actually used as the option.
+							value: channel.channel_id,
+						};
+					}),
+				);
 			} catch (e) {
 				logger.error(e);
 			}

@@ -52,7 +52,7 @@ if (triggerUpdate == true) {
 			Routes.applicationCommands(getID.id),
 			{
 				body: [...commands.values()].map((a: CommandType) => {
-					return a.data.toJSON();
+					return a.data;
 				}),
 			},
 		);

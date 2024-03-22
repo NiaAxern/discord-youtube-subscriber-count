@@ -17,7 +17,8 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "discord.js": "^14.14.1",
+    "discord-api-types": "^0.37.76",
+    "discord.js": "latest",
     "eslint": "^8.56.0",
     "pino": "^8.19.0",
     "pino-pretty": "^10.3.1",
