@@ -26,7 +26,7 @@ async function checkForUpdates() {
 				fetchingIDs.push([saved_channel.channel_id, index]);
 				if (
 					fetchingIDs.length >=
-					(config.youtube.api != 'innertube'
+					(config.youtube.api as string != 'innertube'
 						? index == youtube_channels.length - 1
 							? fetchingIDs.length
 							: 50
@@ -35,7 +35,7 @@ async function checkForUpdates() {
 					const ytIDs = fetchingIDs;
 					fetchingIDs = [];
 					const response =
-						config.youtube.api != 'innertube'
+						config.youtube.api as string != 'innertube'
 							? await getChannels(ytIDs.map((a) => a[0]).join(','))
 							: [await getChannel_Main(ytIDs.map((a) => a[0]).join(','))];
 
